@@ -1,38 +1,86 @@
-﻿#include <SDL.h>
-#include "TileMap.h"
+#include "tinyxml2.h"
+#include "CommonFunc.h"
+#include "BaseObject.h"
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+BaseObject g_background;
 
+bool InitData() {
+    bool success = true;
+    int ret = SDL_Init(SDL_INIT_VIDEO);
+    if (ret != 0) {
+        return false;
+    }
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
+    g_window = SDL_CreateWindow("Diamond Rush",
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+        SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+
+    if (g_window == NULL) {
+        success = false;
+    }
+    else {
+        g_screen = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
+        if (g_screen == NULL) {
+            success = false;
+        }
+        else {
+            SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255); // Màu trắng
+            int imgFlags = IMG_INIT_PNG;
+            if (!(IMG_Init(imgFlags) && imgFlags)) {
+                success = false;
+            }
+        }
+
+    }
+
+    return success;
+}
+
+bool LoadBackground() {
+    bool ret = g_background.LoadImg("image\background.png", g_screen);
+    if (ret = false) {
+        printf("Failed to load background image!\n");
+        return false;
+    }
+    return true;
+}
+
+void close() {
+    g_background.Free();
+    SDL_DestroyRenderer(g_screen);
+    g_screen = NULL;
+    SDL_DestroyWindow(g_window);
+    g_window = NULL;
+    IMG_Quit();
+    SDL_Quit();
+}
 int main(int argc, char* argv[]) {
-    // Khởi tạo SDL
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window* window = SDL_CreateWindow("Diamond Rush - Map", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-    // Load bản đồ từ file level1.tmx
-    TileMap map;
-    if (!map.LoadFromFile("level1.tmx", renderer)) {
-        SDL_Log("Khong the load file level1.tmx");
+    if (!InitData()) {
+        return -1;
+    }
+    if (LoadBackground() == false) {
         return -1;
     }
 
-    bool running = true;
-    SDL_Event event;
-
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) running = false;
+    bool is_quit = false;
+    while (!is_quit) {
+        while (SDL_PollEvent(&g_event) != 0) {
+            if (g_event.type == SDL_QUIT) {
+                is_quit = true;
+            }
         }
 
-        SDL_RenderClear(renderer);
-        map.Render(renderer);
-        SDL_RenderPresent(renderer);
+        SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
+        SDL_RenderClear(g_screen);
+
+        g_background.Render(g_screen, NULL); // Vẽ background
+
+        SDL_RenderPresent(g_screen); // Cập nhật màn hình
     }
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
+    close();
+   
     return 0;
 }
