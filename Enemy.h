@@ -1,4 +1,4 @@
-#ifndef ENEMY_H
+﻿#ifndef ENEMY_H
 #define ENEMY_H
 
 #include <SDL.h>
@@ -35,7 +35,6 @@ private:
     const int maxMoveDistance = 3;
 };
 
-extern int enemyMap[MAP_HEIGHT][MAP_WIDTH];
-void LoadEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer);
-
+extern std::vector<Enemy> enemies;
+void LoadEnemies(SDL_Renderer* renderer);
 #endif

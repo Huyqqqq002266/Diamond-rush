@@ -6,6 +6,7 @@
 
 extern int tileMap[MAP_HEIGHT][MAP_WIDTH];
 extern int originalMap[MAP_HEIGHT][MAP_WIDTH];
+extern int enemyMap[MAP_HEIGHT][MAP_WIDTH];
 
 class Map {
 public:

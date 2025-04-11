@@ -6,7 +6,6 @@
 #include <vector>
 
 BaseObject g_background;
-std::vector<Enemy> enemies;
 Character* player = nullptr;
 
 bool InitData() {
@@ -56,7 +55,7 @@ int main(int argc, char* argv[]) {
 
     gameMap.SaveOriginalMap();
 
-    LoadEnemies(enemies, g_screen);
+    LoadEnemies( g_screen);
     player = new Character(1, 18, g_screen);
 
     bool is_quit = false;
@@ -87,7 +86,7 @@ int main(int argc, char* argv[]) {
         SDL_Delay(200);
         if (player->IsDead()) {
             gameMap.ResetMap();
-            LoadEnemies(enemies, g_screen);
+            LoadEnemies(g_screen);
             player->Reset();
         }
     }
@@ -95,4 +94,3 @@ int main(int argc, char* argv[]) {
     Close(gameMap);
     return 0;
 }
-

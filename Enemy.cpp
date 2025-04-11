@@ -1,15 +1,16 @@
-#include "Enemy.h"
+﻿#include "Enemy.h"
 #include "map.h"
 #include <iostream>
 #include <cstring>
 
 int enemyMap[MAP_HEIGHT][MAP_WIDTH] = { 0 };
+std::vector<Enemy> enemies;
 
 Enemy::Enemy(int x, int y, Direction dir, SDL_Renderer* renderer)
     : tileX(x), tileY(y), startX(x), startY(y), direction(dir), renderer(renderer) {
     this->x = x * TILE_SIZE;
     this->y = y * TILE_SIZE;
-    LoadSprite("image/enemy.png");
+    
 }
 
 Enemy::~Enemy() {
@@ -83,7 +84,7 @@ void Enemy::Reset() {
     moveDistance = 0;
 }
 
-void LoadEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer) {
+void LoadEnemies(SDL_Renderer* renderer) {
     enemies.clear();
     memset(enemyMap, 0, sizeof(enemyMap));
 

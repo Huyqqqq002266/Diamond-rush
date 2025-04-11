@@ -1,6 +1,7 @@
 ﻿#include "Character.h"
 #include <iostream>
 #include "map.h"
+#include "Enemy.h"
 
 Character::Character(int x, int y, SDL_Renderer* renderer)
     : startX(x), startY(y), renderer(renderer), direction(RIGHT) {
@@ -115,10 +116,11 @@ void Character::Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]) {
 }
 
 void Character::Die() {
-    std::cout << "Nhân vật đã chết vì bị đá đè!\n";
     dead = true;
     Reset();
 }
+
+
 
 void Character::Reset() {
     x = startX * TILE_SIZE;
@@ -133,7 +135,10 @@ void Character::Reset() {
             tileMap[i][j] = originalMap[i][j];
 
     LoadSprite("character/character_right.png");
+    LoadEnemies(renderer);
 }
+
+
 
 void Character::Render(SDL_Renderer* renderer) {
     SDL_Rect renderQuad = { x, y, TILE_SIZE, TILE_SIZE };
