@@ -1,64 +1,106 @@
-﻿#include "Enemy.h"
-#include "Map.h"
-#include <stdio.h>
+#include "Enemy.h"
+#include "map.h"
+#include <iostream>
+#include <cstring>
 
-Enemy::Enemy(int x, int y, Direction dir, SDL_Renderer* renderer) {
-    gridX = x;
-    gridY = y;
-    pixelX = x * TILE_SIZE;
-    pixelY = y * TILE_SIZE;
+int enemyMap[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 
-    // Xác định hướng ban đầu
-    if (dir == HORIZONTAL) {
-        dx = 1; dy = 0;
-    }
-    else {
-        dx = 0; dy = 1;
-    }
-
-    // Load ảnh rắn
-    texture = IMG_LoadTexture(renderer, "image/enemy.png");
-    if (texture == NULL) {
-        printf("Failed to load enemy texture! SDL Error: %s\n", SDL_GetError());
-    }
+Enemy::Enemy(int x, int y, Direction dir, SDL_Renderer* renderer)
+    : tileX(x), tileY(y), startX(x), startY(y), direction(dir), renderer(renderer) {
+    this->x = x * TILE_SIZE;
+    this->y = y * TILE_SIZE;
+    LoadSprite("image/enemy.png");
 }
 
 Enemy::~Enemy() {
-    if (texture != nullptr) {
+    if (texture) {
         SDL_DestroyTexture(texture);
         texture = nullptr;
     }
 }
 
-void Enemy::Update() {
-    int nextX = gridX + dx;
-    int nextY = gridY + dy;
-
-    // Nếu gặp vật cản hoặc enemy khác, quay đầu
-    if (tileMap[nextY][nextX] != 0 || enemyMap[nextY][nextX] == 1) {
-        dx = -dx;
-        dy = -dy;
+void Enemy::LoadSprite(const std::string& path) {
+    SDL_Surface* surface = IMG_Load(path.c_str());
+    if (!surface) {
+        std::cerr << "IMG_Load error: " << IMG_GetError() << std::endl;
         return;
     }
 
-    // Xóa vị trí cũ trên enemyMap và tileMap
-    enemyMap[gridY][gridX] = 0;
-    tileMap[gridY][gridX] = 0;
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
 
-    // Cập nhật vị trí mới
-    gridX = nextX;
-    gridY = nextY;
+    if (!texture) {
+        std::cerr << "SDL_CreateTexture error: " << SDL_GetError() << std::endl;
+    }
+}
 
-    // Đánh dấu vị trí mới trên enemyMap và tileMap
-    enemyMap[gridY][gridX] = 1;
-    tileMap[gridY][gridX] = 5;
+bool Enemy::CanMoveTo(int tx, int ty) {
+    if (tx < 0 || tx >= MAP_WIDTH || ty < 0 || ty >= MAP_HEIGHT) return false;
+    int tileType = tileMap[ty][tx];
+    return (tileType == 0 || tileType == 3 || tileType == 4);
+}
 
-    // Cập nhật vị trí pixel
-    pixelX = gridX * TILE_SIZE;
-    pixelY = gridY * TILE_SIZE;
+void Enemy::Update() {
+    int dx = 0, dy = 0;
+    if (direction == HORIZONTAL) dx = forward ? 1 : -1;
+    else dy = forward ? 1 : -1;
+
+    int nextTileX = tileX + dx;
+    int nextTileY = tileY + dy;
+
+    if (CanMoveTo(nextTileX, nextTileY)) {
+        tileMap[tileY][tileX] = 0;
+        tileX = nextTileX;
+        tileY = nextTileY;
+        tileMap[tileY][tileX] = 5;
+
+        x = tileX * TILE_SIZE;
+        y = tileY * TILE_SIZE;
+
+        moveDistance++;
+        if (moveDistance >= maxMoveDistance) {
+            forward = !forward;
+            moveDistance = 0;
+        }
+    }
+    else {
+        forward = !forward;
+        moveDistance = 0;
+    }
 }
 
 void Enemy::Render(SDL_Renderer* renderer) {
-    SDL_Rect dstRect = { pixelX, pixelY, TILE_SIZE, TILE_SIZE };
-    SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+    SDL_Rect renderQuad = { x, y, TILE_SIZE, TILE_SIZE };
+    SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
+}
+
+void Enemy::Reset() {
+    tileX = startX;
+    tileY = startY;
+    x = tileX * TILE_SIZE;
+    y = tileY * TILE_SIZE;
+    forward = true;
+    moveDistance = 0;
+}
+
+void LoadEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer) {
+    enemies.clear();
+    memset(enemyMap, 0, sizeof(enemyMap));
+
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (tileMap[y][x] == 5) {
+                Direction dir;
+
+                if (y == 4 && x == 5) dir = HORIZONTAL;
+                else if ((y == 4 && x == 2) || (y == 17 && (x == 15 || x == 17 || x == 19)))
+                    dir = VERTICAL;
+                else
+                    continue;
+
+                enemies.emplace_back(x, y, dir, renderer);
+                enemyMap[y][x] = 1;
+            }
+        }
+    }
 }
