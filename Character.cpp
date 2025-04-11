@@ -8,7 +8,7 @@ Character::Character(int x, int y, SDL_Renderer* renderer)
 
     this->x = x * TILE_SIZE;
     this->y = y * TILE_SIZE;
-    tileMap[y][x] = 1;
+    tileMap[y][x] = 3;
     LoadSprite("character/character_right.png");
 }
 
@@ -54,15 +54,41 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
 
     switch (event.key.keysym.sym) {
     case SDLK_LEFT:
-        newX -= TILE_SIZE;
         direction = LEFT;
         spritePath = "character/character_left.png";
+        if (!CheckCollision(x - TILE_SIZE, y, tileMap)) {
+            newX -= TILE_SIZE;
+        }
+        else {
+            int tileX = x / TILE_SIZE;
+            int tileY = y / TILE_SIZE;
+            if (tileMap[tileY][tileX - 1] == 2 && tileMap[tileY][tileX - 2] == 0) {
+                tileMap[tileY][tileX - 2] = 2;
+                tileMap[tileY][tileX - 1] = 0;
+                newX -= TILE_SIZE;
+            }
+        }
         break;
+
     case SDLK_RIGHT:
-        newX += TILE_SIZE;
         direction = RIGHT;
         spritePath = "character/character_right.png";
+        if (!CheckCollision(x + TILE_SIZE, y, tileMap)) {
+            newX += TILE_SIZE;
+        }
+        else {
+            // Nếu là đá và có thể đẩy
+            int tileX = x / TILE_SIZE;
+            int tileY = y / TILE_SIZE;
+            if (tileMap[tileY][tileX + 1] == 2 && tileMap[tileY][tileX + 2] == 0) {
+                // Đẩy đá
+                tileMap[tileY][tileX + 2] = 2;
+                tileMap[tileY][tileX + 1] = 0;
+                newX += TILE_SIZE;
+            }
+        }
         break;
+
     case SDLK_UP:
         newY -= TILE_SIZE;
         direction = UP;
@@ -86,10 +112,10 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
         int newTileY = y / TILE_SIZE;
 
         tileMap[oldTileY][oldTileX] = 0;
-        tileMap[newTileY][newTileX] = 1;
+        tileMap[newTileY][newTileX] = 3;
 
         if (tileMap[newTileY][newTileX] == 3 || tileMap[newTileY][newTileX] == 4)
-            tileMap[newTileY][newTileX] = 1;
+            tileMap[newTileY][newTileX] = 3;
 
         LoadSprite(spritePath);
     }
@@ -99,22 +125,37 @@ void Character::Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]) {
     int tileX = x / TILE_SIZE;
     int tileY = y / TILE_SIZE;
 
-    underRock = (tileY > 0 && tileMap[tileY - 1][tileX] == 2);
+    bool nowUnderRock = (tileY > 0 && tileMap[tileY - 1][tileX] == 2);
+
+    static int lastTileX = tileX;
+    static int lastTileY = tileY;
 
     static Uint32 lastCheck = SDL_GetTicks();
     Uint32 now = SDL_GetTicks();
     Uint32 frameTime = now - lastCheck;
     lastCheck = now;
+    if (tileMap[tileY][tileX] == 5 && !dead) {
+        Die();
+    }
+    if (nowUnderRock) {
+        if (tileX != lastTileX || tileY != lastTileY || !underRock) {
+            timeUnderRock = 0;
+        }
 
-    if (underRock && !dead) {
         timeUnderRock += frameTime;
-        if (timeUnderRock >= 3000) Die();
+
+        if (timeUnderRock >= 3000 && !dead) {
+            Die();
+        }
     }
     else {
         timeUnderRock = 0;
     }
-}
 
+    underRock = nowUnderRock;
+    lastTileX = tileX;
+    lastTileY = tileY;
+}
 void Character::Die() {
     dead = true;
     Reset();

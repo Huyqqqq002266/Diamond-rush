@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "Character.h"
 #include <vector>
+#include"RockManager.h"
 
 BaseObject g_background;
 Character* player = nullptr;
@@ -54,6 +55,7 @@ int main(int argc, char* argv[]) {
     if (!gameMap.LoadTiles(g_screen)) return -1;
 
     gameMap.SaveOriginalMap();
+    RockManager RockManager;
 
     LoadEnemies( g_screen);
     player = new Character(1, 18, g_screen);
@@ -66,7 +68,7 @@ int main(int argc, char* argv[]) {
             if (g_event.type == SDL_QUIT) is_quit = true;
             if (player) player->HandleEvent(g_event, tileMap);
         }
-
+        RockManager.Update();
         player->Update(tileMap);
 
         SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
@@ -86,7 +88,7 @@ int main(int argc, char* argv[]) {
         SDL_Delay(200);
         if (player->IsDead()) {
             gameMap.ResetMap();
-            LoadEnemies(g_screen);
+            LoadEnemies( g_screen);
             player->Reset();
         }
     }
