@@ -20,6 +20,26 @@ const int COLOR_KEY_G = 175;
 const int COLOR_KEY_B = 180;
 
 
+const int MAP_HEIGHT = 21;
+const int MAP_WIDTH = 26;
+const int TILE_SIZE = 32;
+
 const int RENDER_DRAW_COLOR = 0xff;
+
+#ifndef COMMON_FUNC_H
+#define COMMON_FUNC_H
+
+enum Direction {
+    LEFT,
+    RIGHT,
+    UP,
+    DOWN,
+    VERTICAL,
+    HORIZONTAL
+};
+
+#endif
+
+
 #endif  // COMMON_FUNCTION_H_
 

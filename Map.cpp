@@ -1,5 +1,6 @@
-#include "Map.h"
+﻿#include "Map.h"
 #include <stdio.h>
+#include <cstring>
 
 Map::Map() {
     for (int i = 0; i < 9; i++) {
@@ -21,11 +22,11 @@ int tileMap[MAP_HEIGHT][MAP_WIDTH] = {
     {1,1,0,3,3,3,3,1,3,3,3,3,3,3,3,1,1,4,0,4,1,1,1,1,1,1},
     {1,3,4,3,3,3,3,3,3,3,1,1,1,1,3,1,1,1,0,1,1,1,1,1,1,1},
     {1,3,1,3,3,1,1,1,1,1,1,1,1,1,3,1,1,1,0,1,1,1,1,1,1,1},
-    {1,3,3,3,3,3,3,3,3,3,7,0,2,2,3,0,7,0,0,0,0,0,0,0,0,0},
+    {1,3,3,3,3,3,3,3,3,3,7,0,2,2,3,0,7,0,0,0,0,0,8,0,0,0},
     {1,1,1,3,3,3,3,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,3,0,0,0,3,2,3,0,0,1,1,1,1,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,3,0,0,0,3,2,3,0,0,0,1,1,1,1},
-    {1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,3,2,3,0,0,0,0,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,3,3,3,0,0,0,0,1,1,1},
     {1,1,1,1,1,1,2,2,2,2,2,0,1,1,1,1,1,1,1,1,1,0,0,1,1,1},
     {1,1,1,1,1,3,4,4,4,4,4,3,1,1,1,1,1,1,1,1,1,0,0,0,1,1},
     {1,1,1,1,1,3,3,3,3,3,3,3,1,1,1,1,1,1,1,1,1,0,0,0,1,1},
@@ -34,6 +35,7 @@ int tileMap[MAP_HEIGHT][MAP_WIDTH] = {
     {1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
+int originalMap[MAP_HEIGHT][MAP_WIDTH];
 
 
 bool Map::LoadTiles(SDL_Renderer* renderer) {
@@ -60,6 +62,22 @@ void Map::DrawMap(SDL_Renderer* renderer) {
                 SDL_Rect dstRect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
                 SDL_RenderCopy(renderer, tileTextures[tileType], NULL, &dstRect);
             }
+        }
+    }
+}
+void Map::SaveOriginalMap() {
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            originalMap[y][x] = tileMap[y][x];
+        }
+    }
+}
+
+
+void Map::ResetMap() {
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            tileMap[y][x] = originalMap[y][x];
         }
     }
 }

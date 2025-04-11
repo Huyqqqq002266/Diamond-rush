@@ -1,12 +1,13 @@
-#include "CommonFunc.h"
+﻿#include "CommonFunc.h"
 #include "BaseObject.h"
 #include "Map.h"
 #include "Enemy.h"
+#include "Character.h"
 #include <vector>
 
-int enemyMap[MAP_HEIGHT][MAP_WIDTH] = {0};
 BaseObject g_background;
 std::vector<Enemy> enemies;
+Character* player = nullptr;
 
 bool InitData() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) return false;
@@ -15,10 +16,10 @@ bool InitData() {
     g_window = SDL_CreateWindow("Diamond Rush",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    if (g_window == NULL) return false;
+    if (g_window == nullptr) return false;
 
     g_screen = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
-    if (g_screen == NULL) return false;
+    if (g_screen == nullptr) return false;
 
     SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
     if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG) return false;
@@ -34,32 +35,13 @@ bool LoadBackground() {
     return true;
 }
 
-void LoadEnemies() {
-    enemies.clear();
-    memset(enemyMap, 0, sizeof(enemyMap));
-
-    for (int y = 0; y < MAP_HEIGHT; y++) {
-        for (int x = 0; x < MAP_WIDTH; x++) {
-            if (tileMap[y][x] == 5) {
-                Direction dir;
-
-                if ((y == 4 && x == 5)) dir = HORIZONTAL;
-                else if ((y == 4 && x == 2) || (y == 17 && (x == 15 || x == 17 || x == 19)))
-                    dir = VERTICAL;
-                else
-                    continue;
-
-                enemies.emplace_back(x, y, dir, g_screen);
-                enemyMap[y][x] = 1;
-            }
-        }
-    }
-}
-
-
-void close(Map& gameMap) {
+void Close(Map& gameMap) {
     g_background.Free();
     gameMap.Free();
+    if (player) {
+        delete player;
+        player = nullptr;
+    }
     SDL_DestroyRenderer(g_screen);
     SDL_DestroyWindow(g_window);
     SDL_Quit();
@@ -72,7 +54,10 @@ int main(int argc, char* argv[]) {
     Map gameMap;
     if (!gameMap.LoadTiles(g_screen)) return -1;
 
-    LoadEnemies();
+    gameMap.SaveOriginalMap();
+
+    LoadEnemies(enemies, g_screen);
+    player = new Character(1, 18, g_screen);
 
     bool is_quit = false;
     SDL_Event g_event;
@@ -80,7 +65,10 @@ int main(int argc, char* argv[]) {
     while (!is_quit) {
         while (SDL_PollEvent(&g_event) != 0) {
             if (g_event.type == SDL_QUIT) is_quit = true;
+            if (player) player->HandleEvent(g_event, tileMap);
         }
+
+        player->Update(tileMap);
 
         SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
         SDL_RenderClear(g_screen);
@@ -93,10 +81,18 @@ int main(int argc, char* argv[]) {
             enemy.Render(g_screen);
         }
 
+        player->Render(g_screen);
+
         SDL_RenderPresent(g_screen);
-        SDL_Delay(250);
+        SDL_Delay(200);
+        if (player->IsDead()) {
+            gameMap.ResetMap();
+            LoadEnemies(enemies, g_screen);
+            player->Reset();
+        }
     }
 
-    close(gameMap);
+    Close(gameMap);
     return 0;
 }
+
