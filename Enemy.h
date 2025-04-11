@@ -1,17 +1,13 @@
-﻿#ifndef ENEMY_H
+#ifndef ENEMY_H
 #define ENEMY_H
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <string>
+#include <vector>
 #include "CommonFunc.h"
 
-#define TILE_SIZE 32 // Kích thước 1 ô
-extern int tileMap[MAP_HEIGHT][MAP_WIDTH]; // Sử dụng bản đồ toàn cục
-
-enum Direction { HORIZONTAL, VERTICAL };
-
-
-extern int enemyMap[MAP_HEIGHT][MAP_WIDTH];
+enum Direction;
 
 class Enemy {
 public:
@@ -20,13 +16,26 @@ public:
 
     void Update();
     void Render(SDL_Renderer* renderer);
+    void Reset();
 
 private:
-    int gridX, gridY;  // Tọa độ ô trong lưới
-    int pixelX, pixelY; // Tọa độ theo pixel
-    int dx, dy;         // Hướng di chuyển
-    SDL_Texture* texture;
-    const int SPEED = 22;
+    void LoadSprite(const std::string& path);
+    bool CanMoveTo(int tx, int ty);
+
+    SDL_Renderer* renderer = nullptr;
+    SDL_Texture* texture = nullptr;
+
+    int x, y;
+    int tileX, tileY;
+    int startX, startY;
+
+    Direction direction;
+    bool forward = true;
+    int moveDistance = 0;
+    const int maxMoveDistance = 3;
 };
+
+extern int enemyMap[MAP_HEIGHT][MAP_WIDTH];
+void LoadEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer);
 
 #endif
