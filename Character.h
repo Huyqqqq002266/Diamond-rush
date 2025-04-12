@@ -17,6 +17,10 @@ public:
     void Reset();
     bool IsDead() const { return dead; }
 
+    int diamondsCollected = 0;
+    int lives = 3;
+    int key = 0;
+
 private:
     void LoadSprite(const std::string& path);
     bool CheckCollision(int newX, int newY, int tileMap[MAP_HEIGHT][MAP_WIDTH]);
@@ -27,7 +31,6 @@ private:
 
     int x, y;
     int startX, startY;
-
     Direction direction;
     bool underRock = false;
     bool dead = false;

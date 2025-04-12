@@ -3,9 +3,11 @@
 #include "Map.h"
 #include "Enemy.h"
 #include "Character.h"
-#include <vector>
-#include"RockManager.h"
+#include "RockManager.h"
+#include "HUD.h"
 
+
+HUD* hud = nullptr;
 BaseObject g_background;
 Character* player = nullptr;
 
@@ -38,12 +40,20 @@ bool LoadBackground() {
 void Close(Map& gameMap) {
     g_background.Free();
     gameMap.Free();
+
     if (player) {
         delete player;
         player = nullptr;
     }
+
+    if (hud) {
+        delete hud;
+        hud = nullptr;
+    }
+
     SDL_DestroyRenderer(g_screen);
     SDL_DestroyWindow(g_window);
+    IMG_Quit();
     SDL_Quit();
 }
 
@@ -57,8 +67,9 @@ int main(int argc, char* argv[]) {
     gameMap.SaveOriginalMap();
     RockManager RockManager;
 
-    LoadEnemies( g_screen);
+    LoadEnemies(g_screen);
     player = new Character(1, 18, g_screen);
+    hud = new HUD(g_screen);
 
     bool is_quit = false;
     SDL_Event g_event;
@@ -68,6 +79,7 @@ int main(int argc, char* argv[]) {
             if (g_event.type == SDL_QUIT) is_quit = true;
             if (player) player->HandleEvent(g_event, tileMap);
         }
+
         RockManager.Update();
         player->Update(tileMap);
 
@@ -83,12 +95,17 @@ int main(int argc, char* argv[]) {
         }
 
         player->Render(g_screen);
+        hud->SetDiamonds(player->diamondsCollected);
+        hud->SetLives(player->lives);
+        hud->SetKeys(player->key);
+        hud->Render(g_screen);
 
         SDL_RenderPresent(g_screen);
         SDL_Delay(200);
+
         if (player->IsDead()) {
             gameMap.ResetMap();
-            LoadEnemies( g_screen);
+            LoadEnemies(g_screen);
             player->Reset();
         }
     }

@@ -43,7 +43,7 @@ bool Character::CheckCollision(int newX, int newY, int tileMap[MAP_HEIGHT][MAP_W
         return true;
 
     int tileType = tileMap[tileY][tileX];
-    return (tileType == 1 || tileType == 2 || tileType == 5);
+    return (tileType == 1 || tileType == 2);
 }
 
 void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]) {
@@ -77,11 +77,9 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
             newX += TILE_SIZE;
         }
         else {
-            // Nếu là đá và có thể đẩy
             int tileX = x / TILE_SIZE;
             int tileY = y / TILE_SIZE;
             if (tileMap[tileY][tileX + 1] == 2 && tileMap[tileY][tileX + 2] == 0) {
-                // Đẩy đá
                 tileMap[tileY][tileX + 2] = 2;
                 tileMap[tileY][tileX + 1] = 0;
                 newX += TILE_SIZE;
@@ -110,6 +108,20 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
         y = newY;
         int newTileX = x / TILE_SIZE;
         int newTileY = y / TILE_SIZE;
+        if (!CheckCollision(newX, newY, tileMap)) {
+            int tileX = newX / TILE_SIZE;
+            int tileY = newY / TILE_SIZE;
+            if (tileMap[tileY][tileX] == 5 && !dead) {
+                Die();
+                return;
+            }
+        }
+        if (tileMap[newTileY][newTileX] == 4) {
+            diamondsCollected++;
+        }
+        if (tileMap[newTileY][newTileX] == 6) {
+            key++;
+        }
 
         tileMap[oldTileY][oldTileX] = 0;
         tileMap[newTileY][newTileX] = 3;
@@ -144,7 +156,7 @@ void Character::Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]) {
 
         timeUnderRock += frameTime;
 
-        if (timeUnderRock >= 3000 && !dead) {
+        if (timeUnderRock >= 2000 && !dead) {
             Die();
         }
     }
@@ -158,6 +170,7 @@ void Character::Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]) {
 }
 void Character::Die() {
     dead = true;
+    lives--;
     Reset();
 }
 
