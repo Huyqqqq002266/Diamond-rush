@@ -5,7 +5,7 @@
 #include "Character.h"
 #include "RockManager.h"
 #include "HUD.h"
-
+#include "menu.h"
 
 HUD* hud = nullptr;
 BaseObject g_background;
@@ -61,55 +61,182 @@ int main(int argc, char* argv[]) {
     if (!InitData()) return -1;
     if (!LoadBackground()) return -1;
 
+BACK_TO_MENU:
+    Menu* menu = new Menu(g_screen);
+    bool inMenu = true;
+    bool isPaused = false;
+    SDL_Event event;
+    while (inMenu) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                delete menu;
+                return 0;
+            }
+
+            int result = menu->handleEvent(event);
+            switch (result) {
+            case Menu::NEW_GAME:
+                inMenu = false;
+                break;
+            case Menu::QUIT:
+                delete menu;
+                return 0;
+            }
+        }
+
+        SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255);
+        SDL_RenderClear(g_screen);
+        menu->render();
+        SDL_RenderPresent(g_screen);
+        SDL_Delay(16);
+    }
+    delete menu;
     Map gameMap;
     if (!gameMap.LoadTiles(g_screen)) return -1;
-
+    gameMap.LoadCurrentLevel(1);
     gameMap.SaveOriginalMap();
-    RockManager RockManager;
+    RockManager rockManager;
 
     LoadEnemies(g_screen);
     player = new Character(1, 18, g_screen);
     hud = new HUD(g_screen);
 
     bool is_quit = false;
-    SDL_Event g_event;
-
+    
     while (!is_quit) {
-        while (SDL_PollEvent(&g_event) != 0) {
-            if (g_event.type == SDL_QUIT) is_quit = true;
-            if (player) player->HandleEvent(g_event, tileMap);
+        while (SDL_PollEvent(&event) != 0) {
+            if (event.type == SDL_QUIT) {
+                is_quit = true;
+            }
+
+            if (!isPaused) {
+                if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+                    isPaused = true;
+                    menu = new Menu(g_screen);
+                    menu->setPause(true);
+                }
+
+                if (player) {
+                    player->HandleEvent(event, tileMap);
+                }
+            }
+            else {
+                int result = menu->handleEvent(event);
+                switch (result) {
+                case Menu::RESUME:
+                    isPaused = false;
+                    delete menu;
+                    menu = nullptr;
+                    break;
+                case Menu::QUIT:
+                    isPaused = false;
+                    delete menu;
+                    menu = nullptr;
+
+                    delete player;
+                    player = nullptr;
+                    enemies.clear();
+
+                    inMenu = true;
+                    goto BACK_TO_MENU;
+                }
+            }
         }
 
-        RockManager.Update();
-        player->Update(tileMap);
-
-        SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
-        SDL_RenderClear(g_screen);
-
-        g_background.Render(g_screen, NULL);
-        gameMap.DrawMap(g_screen);
-
-        for (Enemy& enemy : enemies) {
-            enemy.Update();
-            enemy.Render(g_screen);
+        if (isPaused) {
+            SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255);
+            SDL_RenderClear(g_screen);
+            menu->render();
+            SDL_RenderPresent(g_screen);
+            SDL_Delay(200);
+            continue;
         }
+        if (player) {
+            rockManager.Update();
+            player->Update(tileMap);
+            if (player->LevelUp) {
+                currentLevel++;
+                if (currentLevel <= MAX_LEVEL) {
+                    gameMap.LoadCurrentLevel(currentLevel);
+                    player->Reset();
+                    player->LevelUp = false;
+                    LoadEnemies(g_screen);
+                }
+                else {
+                    is_quit = true;
+                    break;
+                }
+            }
+            if (player->IsGameOver()) {
+                delete player;
+                player = nullptr;
+                enemies.clear();
 
-        player->Render(g_screen);
-        hud->SetDiamonds(player->diamondsCollected);
-        hud->SetLives(player->lives);
-        hud->SetKeys(player->key);
-        hud->Render(g_screen);
+                menu = new Menu(g_screen);
 
-        SDL_RenderPresent(g_screen);
-        SDL_Delay(200);
+                bool gameOverMenu = true;
+                while (gameOverMenu) {
+                    while (SDL_PollEvent(&event)) {
+                        if (event.type == SDL_QUIT) {
+                            gameOverMenu = false;
+                            is_quit = true;
+                        }
 
-        if (player->IsDead()) {
-            gameMap.ResetMap();
-            LoadEnemies(g_screen);
-            player->Reset();
+                        int result = menu->handleEvent(event);
+                        switch (result) {
+                        case Menu::GAME_OVER_AGAIN:
+                            delete menu;
+                            goto BACK_TO_MENU;
+                        case Menu::GAME_OVER_QUIT:
+                            gameOverMenu = false;
+                            is_quit = true;
+                            break;
+                        }
+                    }
+
+                    SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255);
+                    SDL_RenderClear(g_screen);
+                    menu->RenderGameOver(g_screen);
+                    SDL_RenderPresent(g_screen);
+                    SDL_Delay(16);
+                }
+
+                delete menu;
+                menu = nullptr;
+                continue;
+
+                if (player->IsDead()) {
+                    gameMap.ResetMap();
+                    LoadEnemies(g_screen);
+                    player->Reset();
+                }
+
+                SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
+                SDL_RenderClear(g_screen);
+
+                g_background.Render(g_screen, NULL);
+                gameMap.DrawMap(g_screen);
+
+                for (Enemy& enemy : enemies) {
+                    enemy.Update();
+                    enemy.Render(g_screen);
+                }
+
+                if (player) {
+                    player->Render(g_screen);
+                    hud->SetDiamonds(player->diamondsCollected);
+                    hud->SetLives(player->lives);
+                    hud->SetKeys(player->key);
+                    hud->Render(g_screen);
+                }
+
+                SDL_RenderPresent(g_screen);
+                SDL_Delay(200);
+            }
+
+
+            Close(gameMap);
+            return 0;
         }
     }
-
-    Close(gameMap);
-    return 0;
 }

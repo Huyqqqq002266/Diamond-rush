@@ -16,6 +16,8 @@ public:
     void Render(SDL_Renderer* renderer);
     void Reset();
     bool IsDead() const { return dead; }
+    bool LevelUp = false;
+    bool IsGameOver() const { return lives <= 0; }
 
     int diamondsCollected = 0;
     int lives = 3;

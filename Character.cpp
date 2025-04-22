@@ -67,6 +67,7 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
                 tileMap[tileY][tileX - 1] = 0;
                 newX -= TILE_SIZE;
             }
+            spritePath = "character/character_push_left.png";
         }
         break;
 
@@ -84,6 +85,7 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
                 tileMap[tileY][tileX + 1] = 0;
                 newX += TILE_SIZE;
             }
+            spritePath = "character/character_push_right.png";
         }
         break;
 
@@ -95,7 +97,7 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
     case SDLK_DOWN:
         newY += TILE_SIZE;
         direction = DOWN;
-        spritePath = "character/character_up.png";
+        spritePath = "character/character_down.png";
         break;
     default:
         return;
@@ -121,6 +123,9 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
         }
         if (tileMap[newTileY][newTileX] == 6) {
             key++;
+        }
+        if (tileMap[newTileY][newTileX] == 8 && diamondsCollected >= DIAMONDS_REQUIRED_FOR_NEXT_LEVEL) {
+            LevelUp = true;
         }
 
         tileMap[oldTileY][oldTileX] = 0;
@@ -156,13 +161,15 @@ void Character::Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]) {
 
         timeUnderRock += frameTime;
 
+        if (timeUnderRock >= 500 && timeUnderRock < 2000) {
+            LoadSprite("character/character_underrock.png");
+        }
+
         if (timeUnderRock >= 2000 && !dead) {
             Die();
         }
     }
-    else {
-        timeUnderRock = 0;
-    }
+
 
     underRock = nowUnderRock;
     lastTileX = tileX;
@@ -187,7 +194,8 @@ void Character::Reset() {
     for (int i = 0; i < MAP_HEIGHT; ++i)
         for (int j = 0; j < MAP_WIDTH; ++j)
             tileMap[i][j] = originalMap[i][j];
-
+    diamondsCollected = 0;
+    key = 0;
     LoadSprite("character/character_right.png");
     LoadEnemies(renderer);
 }
