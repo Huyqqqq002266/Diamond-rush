@@ -20,5 +20,5 @@ protected:
     SDL_Rect rect_;
 };
 
-#endif  // BASE_OBJECT_H_
+#endif
 

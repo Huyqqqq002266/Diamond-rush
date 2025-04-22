@@ -1,5 +1,7 @@
 #ifndef COMMON_FUNCTION_H_
 #define COMMON_FUNCTION_H_
+#define DIAMONDS_REQUIRED_FOR_NEXT_LEVEL 25
+#define MAX_LEVEL 2
 
 #include <windows.h>
 #include <string>
@@ -39,7 +41,4 @@ enum Direction {
 };
 
 #endif
-
-
-#endif  // COMMON_FUNCTION_H_
-
+#endif

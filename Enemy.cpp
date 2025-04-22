@@ -37,9 +37,11 @@ void Enemy::LoadSprite(const std::string& path) {
 
 bool Enemy::CanMoveTo(int tx, int ty) {
     if (tx < 0 || tx >= MAP_WIDTH || ty < 0 || ty >= MAP_HEIGHT) return false;
+
     int tileType = tileMap[ty][tx];
-    return (tileType == 0 || tileType == 3 || tileType == 4);
+    return (tileType != 1 && tileType != 2);
 }
+
 
 void Enemy::Update() {
     int dx = 0, dy = 0;

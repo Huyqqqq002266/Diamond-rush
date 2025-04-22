@@ -57,10 +57,7 @@ void Menu::setPause(bool isPaused) {
 
 void Menu::RenderGameOver(SDL_Renderer* renderer) {
     if (gameOverTexture) {
-        SDL_Rect renderQuad = { 832 / 4, 672 / 4, 832 / 2, 672 / 2 };
-        SDL_RenderCopy(renderer, gameOverTexture, NULL, &renderQuad);
-        SDL_RenderFillRect(renderer, &gameOverPlayAgainButton);
-        SDL_RenderFillRect(renderer, &gameOverQuitButton);
+        SDL_RenderCopy(renderer, gameOverTexture, NULL, &menuRect);
     }
 }
 

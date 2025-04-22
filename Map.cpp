@@ -2,17 +2,11 @@
 #include <stdio.h>
 #include <cstring>
 
-Map::Map() {
-    for (int i = 0; i < 9; i++) {
-        tileTextures[i] = nullptr;
-    }
-}
+int currentLevel = 1;
+int tileMap[MAP_HEIGHT][MAP_WIDTH];
+int originalMap[MAP_HEIGHT][MAP_WIDTH];
 
-Map::~Map() {
-    Free();
-}
-
-int tileMap[MAP_HEIGHT][MAP_WIDTH] = {
+int level1_Map[MAP_HEIGHT][MAP_WIDTH] = {
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {1,1,1,4,3,4,4,3,3,1,1,1,1,1,2,0,0,0,6,0,0,0,2,1,1,1},
@@ -35,58 +29,108 @@ int tileMap[MAP_HEIGHT][MAP_WIDTH] = {
     {1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
-int originalMap[MAP_HEIGHT][MAP_WIDTH];
 
+int level2_Map[MAP_HEIGHT][MAP_WIDTH] = {
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,8,0,0,0},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1},
+    {1,1,1,1,1,3,3,2,4,3,1,1,1,1,2,1,1,1,0,0,4,2,3,0,1,1},
+    {0,0,0,0,0,3,3,4,4,3,0,2,0,0,3,3,0,0,0,4,2,4,2,0,1,1},
+    {1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,3,1,1,1,1,0,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,0,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,2,0,1,1,1,2,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,0,2,0,0,0,1,0,1,1,1,2,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,2,1,1,1,1,3,4,1,1,1},
+    {1,1,1,4,3,2,3,2,0,0,0,0,4,1,1,1,1,1,1,1,1,0,4,1,1,1},
+    {1,0,0,3,0,2,3,3,0,1,0,1,1,1,1,1,1,1,1,1,1,3,4,1,1,1},
+    {1,0,0,0,3,3,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,0,1,1,1,1},
+    {1,0,1,3,4,4,6,1,1,1,1,1,1,1,1,1,1,1,4,3,0,0,1,1,1,1},
+    {1,7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,3,6,1,1,1,1,1},
+    {1,0,0,0,0,1,1,4,0,2,2,2,2,1,1,1,1,1,3,3,1,1,1,1,1,1},
+    {1,0,0,0,0,0,0,3,0,3,3,3,3,0,1,0,2,4,3,1,1,1,1,1,1,1},
+    {1,1,0,0,0,6,1,4,1,0,0,0,5,0,7,0,3,2,0,1,1,1,1,1,1,1},
+    {1,1,1,5,1,1,1,4,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1,1,0,5,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+};
+Map::Map() {
+    for (int i = 0; i < 9; ++i) {
+        tileTextures[i] = nullptr;
+    }
+}
+
+Map::~Map() {
+    Free();
+}
 
 bool Map::LoadTiles(SDL_Renderer* renderer) {
     const char* filePaths[9] = {
-        "image/ground.png", "image/wall.png", "image/rock.png", "image/leaves.png",
-        "image/diamond.png", "image/enemy.png", "image/treasure.png", "image/entrance.png", "image/exit.png"
+        "image/ground.png",   
+        "image/wall.png",      
+        "image/rock.png",     
+        "image/leaves.png",   
+        "image/diamond.png",   
+        "image/enemy.png",      
+        "image/treasure.png",  
+        "image/entrance.png", 
+        "image/exit.png"       
     };
 
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 9; ++i) {
         tileTextures[i] = IMG_LoadTexture(renderer, filePaths[i]);
-        if (tileTextures[i] == NULL) {
-            printf("Failed to load %s! SDL Error: %s\n", filePaths[i], SDL_GetError());
-            return false;
+        if (tileTextures[i] == nullptr) {
+            printf("Failed to load %s! SDL_Error: %s\n", filePaths[i], SDL_GetError());
+            return false; 
         }
     }
     return true;
 }
 
-void Map::DrawMap(SDL_Renderer* renderer) {
-    for (int y = 0; y < MAP_HEIGHT; y++) {
-        for (int x = 0; x < MAP_WIDTH; x++) {
-            int tileType = tileMap[y][x];
-            if (tileTextures[tileType] != NULL) {
-                SDL_Rect dstRect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
-                SDL_RenderCopy(renderer, tileTextures[tileType], NULL, &dstRect);
-            }
-        }
+void Map::LoadCurrentLevel(int level) {
+    currentLevel = level;
+
+    if (level == 1) {
+        memcpy(tileMap, level1_Map, sizeof(level1_Map));
+    }
+    else if (level == 2) {
+        memcpy(tileMap, level2_Map, sizeof(level2_Map));
+    }
+    else {
+        printf("Cấp độ không hợp lệ: %d\n", level);
     }
 }
 void Map::SaveOriginalMap() {
-    for (int y = 0; y < MAP_HEIGHT; y++) {
-        for (int x = 0; x < MAP_WIDTH; x++) {
+    for (int y = 0; y < MAP_HEIGHT; ++y) {
+        for (int x = 0; x < MAP_WIDTH; ++x) {
             originalMap[y][x] = tileMap[y][x];
         }
     }
 }
 
-
 void Map::ResetMap() {
-    for (int y = 0; y < MAP_HEIGHT; y++) {
-        for (int x = 0; x < MAP_WIDTH; x++) {
+    for (int y = 0; y < MAP_HEIGHT; ++y) {
+        for (int x = 0; x < MAP_WIDTH; ++x) {
             tileMap[y][x] = originalMap[y][x];
         }
     }
 }
 
+void Map::DrawMap(SDL_Renderer* renderer) {
+    for (int y = 0; y < MAP_HEIGHT; ++y) {
+        for (int x = 0; x < MAP_WIDTH; ++x) {
+            int tileType = tileMap[y][x];
+            if (tileType >= 0 && tileType < 9 && tileTextures[tileType] != nullptr) {
+                SDL_Rect dstRect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+                SDL_RenderCopy(renderer, tileTextures[tileType], nullptr, &dstRect);
+            }
+        }
+    }
+}
 void Map::Free() {
-    for (int i = 0; i < 9; i++) {
-        if (tileTextures[i] != NULL) {
+    for (int i = 0; i < 9; ++i) {
+        if (tileTextures[i] != nullptr) {
             SDL_DestroyTexture(tileTextures[i]);
-            tileTextures[i] = NULL;
+            tileTextures[i] = nullptr;
         }
     }
 }
