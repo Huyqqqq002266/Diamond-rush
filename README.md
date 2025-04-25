@@ -104,6 +104,105 @@ Thất bại: Bị đá đè hoặc rắn cắn hết số mạng.
 🎵 Âm thanh
 Âm nhạc nền và hiệu ứng sử dụng SDL2_mixer.
 
+Về source code game Diamond Rush (SDL2 + C++)
+📄 main.cpp
+Là file khởi động chính của game
+
+Bao gồm:
+
+#include <SDL_mixer.h>: Dùng cho xử lý nhạc và hiệu ứng âm thanh
+
+#include <iostream>: Thư viện chuẩn C++
+
+#include "CommonFunc.h": File chứa các hằng số, biến dùng chung, và các hàm tiện ích cơ bản cho toàn bộ game
+
+Hàm InitData(): Khởi tạo SDL, SDL_image, SDL_ttf, SDL_mixer và tạo Window + Renderer chính cho game
+
+📁 Các file logic chính
+📄 Character.h / Character.cpp
+Xây dựng class nhân vật chính
+
+Xử lý:
+
+Di chuyển theo từng ô
+
+Chạm vào vật thể (đá, kim cương, lá, rắn…)
+
+Cập nhật trạng thái (sống, chết)
+
+Kiểm tra game over
+
+📄 Enemy.h / Enemy.cpp
+Xây dựng class enemy
+
+Điều khiển enemy di chuyển và tấn công nhân vật
+
+Có thể chứa logic AI đơn giản (random hướng hoặc di chuyển theo tuyến)
+
+📄 Map.h / Map.cpp
+Quản lý bản đồ game
+
+Load map từ mảng tileMap
+
+Hiển thị map lên màn hình
+
+Reset map khi nhân vật chết hoặc qua màn
+
+📄 RockManager.h / RockManager.cpp
+Quản lý trọng lực và va chạm của các viên đá
+
+Xử lý đá rơi, va vào nhân vật hoặc enemy
+
+Tính thời gian đá đè và quyết định trạng thái nhân vật
+
+📄 HUD.h / HUD.cpp
+Quản lý HUD (Head-up Display)
+
+Hiển thị số mạng, số kim cương thu thập được
+
+Các biểu tượng phụ (ví dụ: chìa khóa, vật phẩm đặc biệt)
+
+📄 menu.h / menu.cpp
+Tạo và xử lý các menu của game
+
+Menu chính
+
+Game Over
+
+Menu Pause
+
+Chọn màn
+
+Thắng / Thua
+
+📄 CommonFunc.h / CommonFunc.cpp
+Chứa các hằng số dùng chung
+
+Khai báo các biến toàn cục (Window, Renderer…)
+
+Các hàm tiện ích như:
+
+Load ảnh
+
+Load font
+
+Load nhạc
+
+Hàm set vị trí, xử lý âm thanh
+
+📄 BaseObject.h / BaseObject.cpp
+Class cha cho tất cả object có thể vẽ lên màn hình
+
+Chứa:
+
+Texture
+
+Tọa độ
+
+Kích thước
+
+Các hàm LoadImg(), Render(), Free()
+
 📑 Credit
 Code: Huyqqqq
 
