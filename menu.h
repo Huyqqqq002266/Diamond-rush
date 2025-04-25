@@ -17,7 +17,10 @@ public:
         GAME_OVER_AGAIN,
         GAME_OVER_QUIT,
         WIN_PLAY_AGAIN,
-        WIN_NEXT_LEVEL
+        WIN_NEXT_LEVEL,
+        LEVEL_1,
+        LEVEL_2,
+        LEVEL_3
     };
 
     enum State {
@@ -40,6 +43,8 @@ public:
     void setPause(bool isPaused);
     void setGameOver(bool value);
     void setWin(bool value);
+    void setLevelMenu(bool state);
+
 
 private:
     SDL_Renderer* renderer;
@@ -62,6 +67,10 @@ private:
     SDL_Rect gameOverQuitButton;
     SDL_Rect winPlayAgainButton;
     SDL_Rect winNextLevelButton;
+    SDL_Rect level1Button;
+    SDL_Rect level2Button;
+    SDL_Rect level3Button;
+
 
     std::stack<State> stateStack;
     State currentState;

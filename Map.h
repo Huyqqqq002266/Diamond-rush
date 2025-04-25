@@ -17,8 +17,8 @@ public:
     Map();
     ~Map();
     bool LoadTiles(SDL_Renderer* renderer);
-    void LoadCurrentLevel(int level);
     int GetCurrentLevel() const { return currentLevel; }
+    void LoadCurrentLevel(int level);
     void DrawMap(SDL_Renderer* renderer);
     void SaveOriginalMap();
     void ResetMap();

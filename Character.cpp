@@ -221,7 +221,6 @@ void Character::Reset() {
     for (int i = 0; i < MAP_HEIGHT; ++i)
         for (int j = 0; j < MAP_WIDTH; ++j)
             tileMap[i][j] = originalMap[i][j];
-
     diamondsCollected = 0;
     key = 0;
     diamondsPlayed.clear();

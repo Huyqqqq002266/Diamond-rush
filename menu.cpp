@@ -34,6 +34,9 @@ Menu::Menu(SDL_Renderer* renderer) {
     gameOverQuitButton = { 270, 420, 250, 80 };
     winPlayAgainButton = { 131, 414, 257, 82 };
     winNextLevelButton = { 434, 414, 257, 82 };
+    level1Button = { menuX + 244, menuY + 150, 357, 78 };
+    level2Button = { menuX + 244, menuY + 300, 357, 78 };
+    level3Button = { menuX + 244, menuY + 420, 357, 78 };
 }
 
 Menu::~Menu() {
@@ -84,6 +87,18 @@ void Menu::setWin(bool value) {
         }
     }
 }
+void Menu::setLevelMenu(bool value) {
+    if (value) {
+        currentState = LEVEL_MENU;
+    }
+    else {
+        if (!stateStack.empty()) {
+            currentState = stateStack.top();
+            stateStack.pop();
+        }
+    }
+}
+
 
 void Menu::RenderGameOver(SDL_Renderer* renderer) {
     if (gameOverTexture) {
@@ -181,6 +196,25 @@ int Menu::handleEvent(SDL_Event& event) {
             if (SDL_PointInRect(&mouse, &winPlayAgainButton)) return WIN_PLAY_AGAIN;
             if (SDL_PointInRect(&mouse, &winNextLevelButton)) return WIN_NEXT_LEVEL;
         }
+        if (currentState == LEVEL_MENU) {
+            if (SDL_PointInRect(&mouse, &level1Button)) {
+                return LEVEL_1;
+            }
+            if (SDL_PointInRect(&mouse, &level2Button)) {
+                return LEVEL_2;
+            }
+            if (SDL_PointInRect(&mouse, &level3Button)) {
+                return LEVEL_3;
+            }
+            if (SDL_PointInRect(&mouse, &backButton)) {
+                if (!stateStack.empty()) {
+                    currentState = stateStack.top();
+                    stateStack.pop();
+                    return NONE;
+                }
+            }
+        }
+
     }
 
     return NONE;

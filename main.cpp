@@ -91,6 +91,22 @@ int main(int argc, char* argv[]) {
             case Menu::NEW_GAME:
                 inMenu = false;
                 break;
+
+            case Menu::LEVEL_1:
+                currentLevel = 1;
+                inMenu = false;
+                break;
+
+            case Menu::LEVEL_2:
+                currentLevel = 2;
+                inMenu = false;
+                break;
+
+            case Menu::LEVEL_3:
+                currentLevel = 3;
+                inMenu = false;
+                break;
+
             case Menu::QUIT:
                 delete menu;
                 return 0;
@@ -103,15 +119,26 @@ int main(int argc, char* argv[]) {
         SDL_RenderPresent(g_screen);
         SDL_Delay(16);
     }
+
     delete menu;
     Map gameMap;
     if (!gameMap.LoadTiles(g_screen)) return -1;
-    gameMap.LoadCurrentLevel(1);
+    gameMap.LoadCurrentLevel(currentLevel);
     gameMap.SaveOriginalMap();
     RockManager rockManager;
 
-    LoadEnemies(g_screen);
-    player = new Character(1, 18, g_screen);
+    if (currentLevel == 1) {
+        player = new Character(1, 18, g_screen);
+        LoadEnemies(g_screen);
+    }
+    else if (currentLevel == 2) {
+        player = new Character(2, 4, g_screen);
+        LoadEnemies(g_screen);
+    }
+    else if (currentLevel == 3) {
+        player = new Character(2, 14, g_screen);
+        LoadEnemies(g_screen);
+    }
     hud = new HUD(g_screen);
 
     bool is_quit = false;
@@ -247,7 +274,7 @@ int main(int argc, char* argv[]) {
                 }
                 else {
                     std::cout << "Failed to load game over sound! SDL_mixer Error: " << Mix_GetError() << std::endl;
-                }
+                } 
 
                 while (gameOverMenu) {
                     while (SDL_PollEvent(&event)) {
@@ -263,7 +290,15 @@ int main(int argc, char* argv[]) {
                             menu = nullptr;
 
                             ResetGame();
-
+                            if (currentLevel == 1) {
+                                player = new Character(1, 18, g_screen);
+                            }
+                            else if (currentLevel == 2) {
+                                player = new Character(2, 4, g_screen);
+                            }
+                            else if (currentLevel == 3) {
+                                player = new Character(2, 14, g_screen);
+                            }
                             gameMap.LoadCurrentLevel(currentLevel);
                             gameMap.SaveOriginalMap();
 
