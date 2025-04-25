@@ -4,6 +4,7 @@
 Diamond Rush SDL2  là một game phiêu lưu giải đố theo phong cách cổ điển, nơi bạn điều khiển nhân vật đi khám phá các hang động bí ẩn, thu thập kim cương và tránh né những mối nguy hiểm như đá rơi và rắn độc. Game được lập trình bằng C++ với SDL2.
 
 📦 Cách tải và chạy game
+
 Bước 1: Clone repo về:
 git clone https://github.com/Huyqqqq002266/Diamond-rush.git
 
@@ -18,8 +19,10 @@ SDL2_mixer
 SDL2_ttf
 
 Bước 3: Mở Visual Studio 2022 , cấu hình project với thư viện SDL2.
-Bước 4: Build project và chạy file diamond_rush.exe
+
+Bước 4: Build project và chạy
 🕹️ Bắt đầu game
+
 Click NEW GAME để vào menu chọn màn chơi.
 
 ![menu](https://github.com/user-attachments/assets/82b6bb38-1415-440f-a934-5351ef21c727)
@@ -34,6 +37,7 @@ Tránh bị đá rơi hoặc rắn tấn công.
 🎮 Các thành phần trong game
 
 📦 Các đối tượng:
+
 Nhân vật chính: Di chuyển theo từng ô, thu thập kim cương, né đá và rắn.
 
 Đá: Rơi khi không có vật cản bên dưới. Đè chết nhân vật hoặc rắn.
@@ -128,7 +132,9 @@ Bao gồm:
 Hàm InitData(): Khởi tạo SDL, SDL_image, SDL_ttf, SDL_mixer và tạo Window + Renderer chính cho game
 
 📁 Các file logic chính
+
 📄 Character.h / Character.cpp
+
 Xây dựng class nhân vật chính
 
 Xử lý:
@@ -158,6 +164,7 @@ Hiển thị map lên màn hình
 Reset map khi nhân vật chết hoặc qua màn
 
 📄 RockManager.h / RockManager.cpp
+
 Quản lý trọng lực và va chạm của các viên đá
 
 Xử lý đá rơi, va vào nhân vật hoặc enemy
@@ -165,6 +172,7 @@ Xử lý đá rơi, va vào nhân vật hoặc enemy
 Tính thời gian đá đè và quyết định trạng thái nhân vật
 
 📄 HUD.h / HUD.cpp
+
 Quản lý HUD (Head-up Display)
 
 Hiển thị số mạng, số kim cương thu thập được
@@ -186,6 +194,7 @@ Chọn màn
 Thắng / Thua
 
 📄 CommonFunc.h / CommonFunc.cpp
+
 Chứa các hằng số dùng chung
 
 Khai báo các biến toàn cục (Window, Renderer…)
@@ -193,6 +202,7 @@ Khai báo các biến toàn cục (Window, Renderer…)
 Hàm set vị trí, xử lý âm thanh
 
 📄 BaseObject.h / BaseObject.cpp
+
 Class cha cho tất cả object có thể vẽ lên màn hình
 
 Chứa:
