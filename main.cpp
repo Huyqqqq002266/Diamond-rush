@@ -132,13 +132,14 @@ int main(int argc, char* argv[]) {
         LoadEnemies(g_screen);
     }
     else if (currentLevel == 2) {
-        player = new Character(2, 4, g_screen);
-        LoadEnemies(g_screen);
-    }
-    else if (currentLevel == 3) {
         player = new Character(2, 14, g_screen);
         LoadEnemies(g_screen);
     }
+    else if (currentLevel == 3) {
+        player = new Character(2, 4, g_screen);
+        LoadEnemies(g_screen);
+    }
+    
     hud = new HUD(g_screen);
 
     bool is_quit = false;
@@ -294,11 +295,12 @@ int main(int argc, char* argv[]) {
                                 player = new Character(1, 18, g_screen);
                             }
                             else if (currentLevel == 2) {
-                                player = new Character(2, 4, g_screen);
-                            }
-                            else if (currentLevel == 3) {
                                 player = new Character(2, 14, g_screen);
                             }
+                            else if (currentLevel == 3) {
+                                player = new Character(2, 4, g_screen);
+                            }
+                            
                             gameMap.LoadCurrentLevel(currentLevel);
                             gameMap.SaveOriginalMap();
 
