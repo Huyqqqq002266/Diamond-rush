@@ -1,6 +1,7 @@
 # Diamond-rush
 📖 Diamond Rush SDL2
-Diamond Rush SDL2 Edition là một game phiêu lưu giải đố theo phong cách cổ điển, nơi bạn điều khiển nhân vật đi khám phá các hang động bí ẩn, thu thập kim cương và tránh né những mối nguy hiểm như đá rơi và rắn độc. Game được lập trình bằng C++ với SDL2.
+
+Diamond Rush SDL2  là một game phiêu lưu giải đố theo phong cách cổ điển, nơi bạn điều khiển nhân vật đi khám phá các hang động bí ẩn, thu thập kim cương và tránh né những mối nguy hiểm như đá rơi và rắn độc. Game được lập trình bằng C++ với SDL2.
 
 📦 Cách tải và chạy game
 Bước 1: Clone repo về:
