@@ -183,14 +183,6 @@ Chứa các hằng số dùng chung
 
 Khai báo các biến toàn cục (Window, Renderer…)
 
-Các hàm tiện ích như:
-
-Load ảnh
-
-Load font
-
-Load nhạc
-
 Hàm set vị trí, xử lý âm thanh
 
 📄 BaseObject.h / BaseObject.cpp
@@ -205,6 +197,8 @@ Tọa độ
 Kích thước
 
 Các hàm LoadImg(), Render(), Free()
+
+
 
 📑 Credit
 Code: Huyqqqq
