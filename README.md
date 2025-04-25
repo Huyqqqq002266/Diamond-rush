@@ -21,6 +21,9 @@ Bước 4: Build project và chạy file diamond_rush.exe
 🕹️ Bắt đầu game
 Click NEW GAME để vào menu chọn màn chơi.
 
+![menu](https://github.com/user-attachments/assets/82b6bb38-1415-440f-a934-5351ef21c727)
+
+
 Nhấn phím mũi tên để di chuyển nhân vật.
 
 Thu thập kim cương để mở cổng kết thúc màn chơi.
@@ -55,6 +58,9 @@ Bản đồ được tạo ra từng các tile ảnh.
 📊 Các tính năng:
 Hệ thống bản đồ dạng mảng 2D.
 
+![background](https://github.com/user-attachments/assets/e67f0cfe-d6e7-451f-814c-e3ddb44461f6)
+
+
 Di chuyển nhân vật theo từng ô.
 
 Trọng lực cho đá.
@@ -67,7 +73,13 @@ Hiệu ứng âm thanh khi thu thập hoặc tương tác.
 
 Màn hình Game Over khi hết mạng.
 
+![game_over](https://github.com/user-attachments/assets/fa5feb31-2632-4f92-9fe2-4c48f9d051ac)
+
+
 Menu Start, Setting, Level Select đầy đủ.
+
+![menu](https://github.com/user-attachments/assets/3a9c3093-387e-44e4-bcd7-f16f61252629)
+
 
 📜 Cách chơi
 🎮 Điều khiển:
