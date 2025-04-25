@@ -8,6 +8,7 @@ Bước 1: Clone repo về:
 git clone https://github.com/Huyqqqq002266/Diamond-rush.git
 
 Bước 2: Cài đặt SDL2 và các thư viện cần thiết:
+
 SDL2
 
 SDL2_image
@@ -83,11 +84,14 @@ Menu Start, Setting, Level Select đầy đủ.
 
 
 📜 Cách chơi
+
 🎮 Điều khiển:
+
 Mũi tên: Di chuyển nhân vật.
 Esc: Tạm dừng game.
 
 📌 Luật chơi:
+
 Thu thập kim cương, tránh đá và kẻ thù.
 
 Khi đủ kim cương → đến cổng exit để qua màn.
@@ -97,11 +101,13 @@ Chết bởi đá/rắn → mất mạng, map trở về trạng thái gốc.
 Hết mạng → Game Over.
 
 🏆 Chiến thắng và thất bại
+
 Chiến thắng: Thu thập đủ kim cương và đi qua cổng exit.
 
 Thất bại: Bị đá đè hoặc rắn cắn hết số mạng.
 
 🎵 Âm thanh
+
 Âm nhạc nền và hiệu ứng sử dụng SDL2_mixer.
 
 
@@ -166,6 +172,7 @@ Hiển thị số mạng, số kim cương thu thập được
 Các biểu tượng phụ (ví dụ: chìa khóa, vật phẩm đặc biệt)
 
 📄 menu.h / menu.cpp
+
 Tạo và xử lý các menu của game
 
 Menu chính
