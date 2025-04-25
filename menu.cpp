@@ -32,8 +32,8 @@ Menu::Menu(SDL_Renderer* renderer) {
     backButton = { 20, 20, 80, 50 };
     gameOverPlayAgainButton = { 220, 290, 380, 75 };
     gameOverQuitButton = { 270, 420, 250, 80 };
-    winPlayAgainButton = { 220, 290, 380, 75 };
-    winNextLevelButton = { 220, 420, 380, 75 };
+    winPlayAgainButton = { 131, 414, 257, 82 };
+    winNextLevelButton = { 434, 414, 257, 82 };
 }
 
 Menu::~Menu() {

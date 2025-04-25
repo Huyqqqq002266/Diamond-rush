@@ -17,14 +17,13 @@ public:
     void Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]);
     void Render(SDL_Renderer* renderer);
     void Reset();
-
-    bool IsDead() const { return dead; }
-    bool IsGameOver() const { return lives <= 0; }
-    bool gameOverByDiamond = false;
-    bool LevelUp = false;
     int diamondsCollected = 0;
     int lives = 3;
     int key = 0;
+    bool gameOverByDiamond = false;
+    bool IsDead() const { return dead; }
+    bool IsGameOver() const { return lives <= 0; }
+    bool IsWin() const;
 
 private:
     void LoadSprite(const std::string& path);
@@ -41,6 +40,10 @@ private:
 
     bool underRock = false;
     bool dead = false;
+    bool isWin = false;
+    bool levelUp = false;
+
+
     Uint32 timeUnderRock = 0;
 
     std::set<std::pair<int, int>> leavesPlayed;

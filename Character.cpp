@@ -124,7 +124,7 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
             return;
         }
 
-        if (tileMap[newTileY][newTileX] == 4 || tileMap[newTileY][newTileX] == 6) {
+        if (tileMap[newTileY][newTileX] == 4) {
             diamondsCollected++;
 
             std::pair<int, int> pos = { newTileY, newTileX };
@@ -146,8 +146,9 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
         }
 
         if (tileMap[newTileY][newTileX] == 8) {
-            if (diamondsCollected >= DIAMONDS_REQUIRED_FOR_NEXT_LEVEL) {
-                LevelUp = true;
+            if (diamondsCollected >= 25) {
+                isWin = true;
+                levelUp = true;
             }
             else {
                 gameOverByDiamond = true;
@@ -197,6 +198,10 @@ void Character::Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]) {
     underRock = nowUnderRock;
     lastTileX = tileX;
     lastTileY = tileY;
+}
+
+bool Character::IsWin() const {
+    return isWin;
 }
 
 void Character::Die() {

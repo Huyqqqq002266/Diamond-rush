@@ -24,7 +24,6 @@ bool InitData() {
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (g_window == nullptr) return false;
-
     g_screen = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
     if (g_screen == nullptr) return false;
 
@@ -295,11 +294,70 @@ int main(int argc, char* argv[]) {
                     }
                 }
 
+
                 if (menu) {
                     delete menu;
                     menu = nullptr;
                 }
                 gameOverMenu = false;
+            }
+            if (player->IsWin()) {
+                delete player;
+                player = nullptr;
+                enemies.clear();
+
+                menu = new Menu(g_screen);
+                menu->setWin(true);
+                bool winMenu = true;
+
+                Mix_HaltMusic();
+
+                Mix_Chunk* winSound = Mix_LoadWAV("music/win_sound.mp3");
+                if (winSound != nullptr) {
+                    Mix_PlayChannel(-1, winSound, 0);
+                }
+                else {
+                    std::cout << "Failed to load win sound! SDL_mixer Error: " << Mix_GetError() << std::endl;
+                }
+
+                while (winMenu) {
+                    while (SDL_PollEvent(&event)) {
+                        if (event.type == SDL_QUIT) {
+                            winMenu = false;
+                            is_quit = true;
+                        }
+
+                        int result = menu->handleEvent(event);
+                        switch (result) {
+                        case Menu::WIN_PLAY_AGAIN:
+                            delete menu;
+                            menu = nullptr;
+
+                            ResetGame();
+                            Mix_PlayMusic(bgMusic, -1);
+                            gameMap.LoadCurrentLevel(currentLevel);
+                            gameMap.SaveOriginalMap();
+                            winMenu = false;
+                            break;
+
+                        case Menu::WIN_NEXT_LEVEL:
+                            delete menu;
+                            menu = nullptr;
+                            winMenu = false;
+                            inMenu = true;
+                            goto BACK_TO_MENU;
+                        }
+                    }
+
+                    SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255);
+                    SDL_RenderClear(g_screen);
+                    if (menu) menu->RenderWinMenu(g_screen);
+                    SDL_RenderPresent(g_screen);
+                }
+
+                Mix_FreeChunk(winSound);
+
+                continue;
             }
 
             if (player->IsDead()) {
