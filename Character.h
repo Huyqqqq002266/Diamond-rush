@@ -3,7 +3,9 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <string>
+#include <set>
 #include "CommonFunc.h"
 
 class Character {
@@ -15,10 +17,11 @@ public:
     void Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]);
     void Render(SDL_Renderer* renderer);
     void Reset();
-    bool IsDead() const { return dead; }
-    bool LevelUp = false;
-    bool IsGameOver() const { return lives <= 0; }
 
+    bool IsDead() const { return dead; }
+    bool IsGameOver() const { return lives <= 0; }
+    bool gameOverByDiamond = false;
+    bool LevelUp = false;
     int diamondsCollected = 0;
     int lives = 3;
     int key = 0;
@@ -30,13 +33,18 @@ private:
 
     SDL_Renderer* renderer;
     SDL_Texture* texture = nullptr;
-
+    Mix_Chunk* collectDiamondSound = nullptr;
+    Mix_Chunk* leavesSound = nullptr;
     int x, y;
     int startX, startY;
     Direction direction;
+
     bool underRock = false;
     bool dead = false;
     Uint32 timeUnderRock = 0;
+
+    std::set<std::pair<int, int>> leavesPlayed;
+    std::set<std::pair<int, int>> diamondsPlayed;
 };
 
-#endif // CHARACTER_H
+#endif 

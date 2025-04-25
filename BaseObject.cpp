@@ -1,7 +1,6 @@
 ﻿
 #include "BaseObject.h"
 
-// Constructor
 BaseObject::BaseObject() {
     p_object_ = NULL;
     rect_.x = 0;
@@ -9,13 +8,9 @@ BaseObject::BaseObject() {
     rect_.w = 0;
     rect_.h = 0;
 }
-
-// Destructor
 BaseObject::~BaseObject() {
     Free();
 }
-
-// Load ảnh từ đường dẫn
 bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen) {
     SDL_Texture* new_texture = NULL;
     SDL_Surface* load_surface = IMG_Load(path.c_str());
@@ -32,13 +27,10 @@ bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen) {
     return p_object_ != NULL;
 }
 
-// Vẽ đối tượng lên màn hình
 void BaseObject::Render(SDL_Renderer* des, const SDL_Rect* clip) {
     SDL_Rect renderquad = { rect_.x, rect_.y, rect_.w, rect_.h };
     SDL_RenderCopy(des, p_object_, clip, &renderquad);
 }
-
-// Giải phóng bộ nhớ
 void BaseObject::Free() {
     if (p_object_ != NULL) {
         SDL_DestroyTexture(p_object_);

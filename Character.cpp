@@ -2,6 +2,7 @@
 #include <iostream>
 #include "map.h"
 #include "Enemy.h"
+#include <set>
 
 Character::Character(int x, int y, SDL_Renderer* renderer)
     : startX(x), startY(y), renderer(renderer), direction(RIGHT) {
@@ -10,13 +11,18 @@ Character::Character(int x, int y, SDL_Renderer* renderer)
     this->y = y * TILE_SIZE;
     tileMap[y][x] = 3;
     LoadSprite("character/character_right.png");
+    collectDiamondSound = Mix_LoadWAV("music/collect_diamond.mp3");
+    leavesSound = Mix_LoadWAV("music/leaves.mp3");
 }
 
 Character::~Character() {
-    if (texture) {
-        SDL_DestroyTexture(texture);
-        texture = nullptr;
+    if (texture) SDL_DestroyTexture(texture);
+    if (collectDiamondSound) Mix_FreeChunk(collectDiamondSound);
+    if (leavesSound) {
+        Mix_FreeChunk(leavesSound);
+        leavesSound = nullptr;
     }
+
 }
 
 void Character::LoadSprite(const std::string& path) {
@@ -94,11 +100,13 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
         direction = UP;
         spritePath = "character/character_up.png";
         break;
+
     case SDLK_DOWN:
         newY += TILE_SIZE;
         direction = DOWN;
         spritePath = "character/character_down.png";
         break;
+
     default:
         return;
     }
@@ -110,30 +118,44 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
         y = newY;
         int newTileX = x / TILE_SIZE;
         int newTileY = y / TILE_SIZE;
-        if (!CheckCollision(newX, newY, tileMap)) {
-            int tileX = newX / TILE_SIZE;
-            int tileY = newY / TILE_SIZE;
-            if (tileMap[tileY][tileX] == 5 && !dead) {
-                Die();
-                return;
+
+        if (tileMap[newTileY][newTileX] == 5 && !dead) {
+            Die();
+            return;
+        }
+
+        if (tileMap[newTileY][newTileX] == 4 || tileMap[newTileY][newTileX] == 6) {
+            diamondsCollected++;
+
+            std::pair<int, int> pos = { newTileY, newTileX };
+            if (diamondsPlayed.find(pos) == diamondsPlayed.end()) {
+                Mix_PlayChannel(-1, collectDiamondSound, 0);
+                diamondsPlayed.insert(pos);
             }
         }
-        if (tileMap[newTileY][newTileX] == 4) {
-            diamondsCollected++;
+        if (tileMap[newTileY][newTileX] == 3) {
+            std::pair<int, int> pos = { newTileY, newTileX };
+            if (leavesPlayed.find(pos) == leavesPlayed.end()) {
+                Mix_PlayChannel(-1, leavesSound, 0);
+                leavesPlayed.insert(pos);
+            }
         }
+
         if (tileMap[newTileY][newTileX] == 6) {
             key++;
         }
-        if (tileMap[newTileY][newTileX] == 8 && diamondsCollected >= DIAMONDS_REQUIRED_FOR_NEXT_LEVEL) {
-            LevelUp = true;
+
+        if (tileMap[newTileY][newTileX] == 8) {
+            if (diamondsCollected >= DIAMONDS_REQUIRED_FOR_NEXT_LEVEL) {
+                LevelUp = true;
+            }
+            else {
+                gameOverByDiamond = true;
+            }
         }
 
         tileMap[oldTileY][oldTileX] = 0;
         tileMap[newTileY][newTileX] = 3;
-
-        if (tileMap[newTileY][newTileX] == 3 || tileMap[newTileY][newTileX] == 4)
-            tileMap[newTileY][newTileX] = 3;
-
         LoadSprite(spritePath);
     }
 }
@@ -151,9 +173,11 @@ void Character::Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]) {
     Uint32 now = SDL_GetTicks();
     Uint32 frameTime = now - lastCheck;
     lastCheck = now;
+
     if (tileMap[tileY][tileX] == 5 && !dead) {
         Die();
     }
+
     if (nowUnderRock) {
         if (tileX != lastTileX || tileY != lastTileY || !underRock) {
             timeUnderRock = 0;
@@ -170,18 +194,16 @@ void Character::Update(int tileMap[MAP_HEIGHT][MAP_WIDTH]) {
         }
     }
 
-
     underRock = nowUnderRock;
     lastTileX = tileX;
     lastTileY = tileY;
 }
+
 void Character::Die() {
     dead = true;
     lives--;
     Reset();
 }
-
-
 
 void Character::Reset() {
     x = startX * TILE_SIZE;
@@ -194,13 +216,13 @@ void Character::Reset() {
     for (int i = 0; i < MAP_HEIGHT; ++i)
         for (int j = 0; j < MAP_WIDTH; ++j)
             tileMap[i][j] = originalMap[i][j];
+
     diamondsCollected = 0;
     key = 0;
+    diamondsPlayed.clear();
     LoadSprite("character/character_right.png");
     LoadEnemies(renderer);
 }
-
-
 
 void Character::Render(SDL_Renderer* renderer) {
     SDL_Rect renderQuad = { x, y, TILE_SIZE, TILE_SIZE };

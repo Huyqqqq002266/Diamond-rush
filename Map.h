@@ -9,6 +9,7 @@ extern int originalMap[MAP_HEIGHT][MAP_WIDTH];
 extern int currentLevel;
 extern int level1_Map[MAP_HEIGHT][MAP_WIDTH];
 extern int level2_Map[MAP_HEIGHT][MAP_WIDTH];
+extern int level3_map[MAP_HEIGHT][MAP_WIDTH];
 extern int enemyMap[MAP_HEIGHT][MAP_WIDTH];
  
 class Map {

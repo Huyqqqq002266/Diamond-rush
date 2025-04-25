@@ -1,4 +1,6 @@
-﻿#include "CommonFunc.h"
+﻿#include <SDL_mixer.h>
+#include<iostream>
+#include "CommonFunc.h"
 #include "BaseObject.h"
 #include "Map.h"
 #include "Enemy.h"
@@ -14,6 +16,9 @@ Character* player = nullptr;
 bool InitData() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) return false;
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        std::cout << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << std::endl;
+    }
 
     g_window = SDL_CreateWindow("Diamond Rush",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -35,6 +40,15 @@ bool LoadBackground() {
         return false;
     }
     return true;
+}
+
+void ResetGame() {
+    if (player) delete player;
+    player = new Character(1, 18, g_screen);
+
+    enemies.clear();
+    LoadEnemies(g_screen);
+    player->Reset();
 }
 
 void Close(Map& gameMap) {
@@ -61,7 +75,7 @@ int main(int argc, char* argv[]) {
     if (!InitData()) return -1;
     if (!LoadBackground()) return -1;
 
-BACK_TO_MENU:
+    BACK_TO_MENU:
     Menu* menu = new Menu(g_screen);
     bool inMenu = true;
     bool isPaused = false;
@@ -102,12 +116,19 @@ BACK_TO_MENU:
     hud = new HUD(g_screen);
 
     bool is_quit = false;
-    
+    Mix_Music* bgMusic = Mix_LoadMUS("music/background_music.mp3");
+    if (bgMusic == nullptr) {
+        std::cout << "Failed to load background music! SDL_mixer Error: " << Mix_GetError() << std::endl;
+    }
+    else {
+        Mix_PlayMusic(bgMusic, -1);
+    }
     while (!is_quit) {
-        while (SDL_PollEvent(&event) != 0) {
+        while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 is_quit = true;
             }
+
 
             if (!isPaused) {
                 if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
@@ -125,7 +146,6 @@ BACK_TO_MENU:
                 switch (result) {
                 case Menu::RESUME:
                     isPaused = false;
-                    menu->setPause(false);
                     delete menu;
                     menu = nullptr;
                     break;
@@ -140,55 +160,40 @@ BACK_TO_MENU:
 
                     inMenu = true;
                     goto BACK_TO_MENU;
-
                 }
             }
         }
 
-
-        if (!isPaused) {
+        if (isPaused) {
+            SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255);
+            SDL_RenderClear(g_screen);
+            if (menu) menu->render();
+            SDL_RenderPresent(g_screen);
+            SDL_Delay(100);
+            continue;
+        }
+        if (player) {
             rockManager.Update();
             player->Update(tileMap);
-            if (player->LevelUp) {
-                currentLevel++;
-                if (currentLevel <= MAX_LEVEL) {
-                    gameMap.LoadCurrentLevel(currentLevel);
-                    player->Reset();
-                    player->LevelUp = false;
-                    LoadEnemies(g_screen);
-                }
-                else {
-                    is_quit = true;
-                }
-            }
-
-            SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
-            SDL_RenderClear(g_screen);
-
-            g_background.Render(g_screen, NULL);
-            gameMap.DrawMap(g_screen); 
-
-            for (Enemy& enemy : enemies) {
-                enemy.Update();
-                enemy.Render(g_screen);
-            }
-
-            player->Render(g_screen);
-            hud->SetDiamonds(player->diamondsCollected);
-            hud->SetLives(player->lives);
-            hud->SetKeys(player->key);
-            hud->Render(g_screen);
-
-            SDL_RenderPresent(g_screen);
-            SDL_Delay(200);
-            if (player->IsGameOver()) {
+            if (player->gameOverByDiamond) {
                 delete player;
                 player = nullptr;
                 enemies.clear();
 
                 menu = new Menu(g_screen);
-
+                menu->setGameOver(true);
                 bool gameOverMenu = true;
+
+                Mix_HaltMusic();
+
+                Mix_Chunk* gameOverSound = Mix_LoadWAV("music/game_over.mp3");
+                if (gameOverSound != nullptr) {
+                    Mix_PlayChannel(-1, gameOverSound, 0);
+                }
+                else {
+                    std::cout << "Failed to load game over sound! SDL_mixer Error: " << Mix_GetError() << std::endl;
+                }
+
                 while (gameOverMenu) {
                     while (SDL_PollEvent(&event)) {
                         if (event.type == SDL_QUIT) {
@@ -200,8 +205,16 @@ BACK_TO_MENU:
                         switch (result) {
                         case Menu::GAME_OVER_AGAIN:
                             delete menu;
-                            goto BACK_TO_MENU;
-                        case Menu::GAME_OVER_QUIT:
+                            menu = nullptr;
+
+                            ResetGame();
+                            Mix_PlayMusic(bgMusic, -1);
+                            gameMap.LoadCurrentLevel(currentLevel);
+                            player->gameOverByDiamond = false;
+                            gameOverMenu = false;
+                            break;
+
+                        case Menu::QUIT:
                             gameOverMenu = false;
                             is_quit = true;
                             break;
@@ -210,31 +223,117 @@ BACK_TO_MENU:
 
                     SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255);
                     SDL_RenderClear(g_screen);
-                    menu->RenderGameOver(g_screen);
+                    if (menu) menu->render();
                     SDL_RenderPresent(g_screen);
-                    SDL_Delay(4);
+                    SDL_Delay(100);
+                }
+
+                continue;
+            }
+
+            if (player->IsGameOver()) {
+                delete player;
+                player = nullptr;
+                enemies.clear();
+
+                menu = new Menu(g_screen);
+                menu->setGameOver(true);
+                bool gameOverMenu = true;
+
+                Mix_HaltMusic();
+
+                Mix_Chunk* gameOverSound = Mix_LoadWAV("music/game_over.mp3");
+                if (gameOverSound != nullptr) {
+                    Mix_PlayChannel(-1, gameOverSound, 0);
+                }
+                else {
+                    std::cout << "Failed to load game over sound! SDL_mixer Error: " << Mix_GetError() << std::endl;
+                }
+
+                while (gameOverMenu) {
+                    while (SDL_PollEvent(&event)) {
+                        if (event.type == SDL_QUIT) {
+                            gameOverMenu = false;
+                            is_quit = true;
+                        }
+
+                        int result = menu->handleEvent(event);
+                        switch (result) {
+                        case Menu::GAME_OVER_AGAIN:
+                            delete menu;
+                            menu = nullptr;
+
+                            ResetGame();
+
+                            gameMap.LoadCurrentLevel(currentLevel);
+                            gameMap.SaveOriginalMap();
+
+                            if (hud) {
+                                delete hud;
+                                hud = nullptr;
+                            }
+                            hud = new HUD(g_screen);
+                            Mix_PlayMusic(bgMusic, -1);
+                            gameOverMenu = false;
+                            break;
+                        case Menu::GAME_OVER_QUIT:
+                            delete menu;
+                            menu = nullptr;
+
+                            gameOverMenu = false;
+                            inMenu = true;
+                            goto BACK_TO_MENU;
+
+                        }
+                    }
+
+                    if (gameOverMenu) {
+                        SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255);
+                        SDL_RenderClear(g_screen);
+                        menu->RenderGameOver(g_screen);
+                        SDL_RenderPresent(g_screen);
+                    }
                 }
 
                 if (menu) {
                     delete menu;
                     menu = nullptr;
                 }
+                gameOverMenu = false;
             }
+
             if (player->IsDead()) {
                 gameMap.ResetMap();
                 LoadEnemies(g_screen);
                 player->Reset();
             }
         }
-        else {
-            SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255);
-            SDL_RenderClear(g_screen);
-            menu->render();
-            SDL_RenderPresent(g_screen);
-            SDL_Delay(200);
+        SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
+        SDL_RenderClear(g_screen);
+
+        g_background.Render(g_screen, NULL);
+        gameMap.DrawMap(g_screen);
+
+        for (Enemy& enemy : enemies) {
+            enemy.Update();
+            enemy.Render(g_screen);
         }
+
+        if (player) {
+            player->Render(g_screen);
+            hud->SetDiamonds(player->diamondsCollected);
+            hud->SetLives(player->lives);
+            hud->SetKeys(player->key);
+            hud->Render(g_screen);
+        }
+
+        SDL_RenderPresent(g_screen);
+        SDL_Delay(200);
     }
 
+    Mix_FreeMusic(bgMusic);
+    Mix_CloseAudio();
     Close(gameMap);
     return 0;
 }
+

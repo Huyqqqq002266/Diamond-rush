@@ -63,7 +63,6 @@ void HUD::Render(SDL_Renderer* renderer) {
     int iconSize = 32;
     int baseY = 10;
 
-    // Diamond
     SDL_Rect diamondRect = { offsetX, baseY, iconSize, iconSize };
     SDL_RenderCopy(renderer, diamondTexture, NULL, &diamondRect);
 
@@ -77,7 +76,6 @@ void HUD::Render(SDL_Renderer* renderer) {
         SDL_DestroyTexture(diamondTextTexture);
     }
 
-    // Heart
     SDL_Rect heartRect = { offsetX + spacing, baseY, iconSize, iconSize };
     SDL_RenderCopy(renderer, heartTexture, NULL, &heartRect);
 
@@ -91,7 +89,6 @@ void HUD::Render(SDL_Renderer* renderer) {
         SDL_DestroyTexture(livesTextTexture);
     }
 
-    // Key
     SDL_Rect keyRect = { offsetX + spacing * 2, baseY, iconSize, iconSize };
     SDL_RenderCopy(renderer, keyTexture, NULL, &keyRect);
 
