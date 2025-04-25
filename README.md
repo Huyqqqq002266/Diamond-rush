@@ -1,6 +1,7 @@
 # Diamond-rush
 📖 Diamond Rush SDL2
 Diamond Rush SDL2 Edition là một game phiêu lưu giải đố theo phong cách cổ điển, nơi bạn điều khiển nhân vật đi khám phá các hang động bí ẩn, thu thập kim cương và tránh né những mối nguy hiểm như đá rơi và rắn độc. Game được lập trình bằng C++ với SDL2.
+
 📦 Cách tải và chạy game
 Bước 1: Clone repo về:
 git clone https://github.com/Huyqqqq002266/Diamond-rush.git
@@ -30,17 +31,21 @@ Tránh bị đá rơi hoặc rắn tấn công.
 Nhân vật chính: Di chuyển theo từng ô, thu thập kim cương, né đá và rắn.
 
 Đá: Rơi khi không có vật cản bên dưới. Đè chết nhân vật hoặc rắn.
+
 ![rock](https://github.com/user-attachments/assets/58d66bbb-c224-40ff-8227-0a94d45255f4)
 
 Kim cương: Thu thập đủ số lượng để mở cửa exit.
+
 ![diamond-removebg-preview](https://github.com/user-attachments/assets/0510dbe1-e4ab-43ae-9cfa-aa01ff65a640)
 
 Rắn: Di chuyển tự động. Chạm vào nhân vật là mất mạng.
 
 Lá cây: Đi qua phát ra âm thanh.
+
 ![leaves](https://github.com/user-attachments/assets/a2674dd9-f2b1-48ac-8220-015b6e98676c)
 
 Cổng Exit: Mở khi đủ số kim cương.
+
 ![exit](https://github.com/user-attachments/assets/85d271ee-f78d-459f-9725-35b170b3c450)
 
 🎨 Đồ họa:
