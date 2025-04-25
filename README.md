@@ -92,6 +92,7 @@ Menu Start, Setting, Level Select đầy đủ.
 🎮 Điều khiển:
 
 Mũi tên: Di chuyển nhân vật.
+
 Esc: Tạm dừng game.
 
 📌 Luật chơi:
@@ -116,9 +117,10 @@ Thất bại: Bị đá đè hoặc rắn cắn hết số mạng.
 
 
 
-Về source code game Diamond Rush (SDL2 + C++) 
+***Về source code game Diamond Rush (SDL2 + C++) 
 
 📄 main.cpp
+
 Là file khởi động chính của game
 
 Bao gồm:
