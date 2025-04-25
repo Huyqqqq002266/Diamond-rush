@@ -31,6 +31,7 @@ Thu thập kim cương để mở cổng kết thúc màn chơi.
 Tránh bị đá rơi hoặc rắn tấn công.
 
 🎮 Các thành phần trong game
+
 📦 Các đối tượng:
 Nhân vật chính: Di chuyển theo từng ô, thu thập kim cương, né đá và rắn.
 
