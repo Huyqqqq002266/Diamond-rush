@@ -104,7 +104,10 @@ Thất bại: Bị đá đè hoặc rắn cắn hết số mạng.
 🎵 Âm thanh
 Âm nhạc nền và hiệu ứng sử dụng SDL2_mixer.
 
-Về source code game Diamond Rush (SDL2 + C++)
+
+
+Về source code game Diamond Rush (SDL2 + C++) 
+
 📄 main.cpp
 Là file khởi động chính của game
 
