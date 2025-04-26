@@ -9,7 +9,7 @@ Character::Character(int x, int y, SDL_Renderer* renderer)
 
     this->x = x * TILE_SIZE;
     this->y = y * TILE_SIZE;
-    tileMap[y][x] = 3;
+    tileMap[y][x] = 6;
     LoadSprite("character/character_right.png");
     collectDiamondSound = Mix_LoadWAV("music/collect_diamond.mp3");
     leavesSound = Mix_LoadWAV("music/leaves.mp3");
@@ -156,7 +156,7 @@ void Character::HandleEvent(SDL_Event& event, int tileMap[MAP_HEIGHT][MAP_WIDTH]
         }
 
         tileMap[oldTileY][oldTileX] = 0;
-        tileMap[newTileY][newTileX] = 3;
+        tileMap[newTileY][newTileX] = 6;
         LoadSprite(spritePath);
     }
 }

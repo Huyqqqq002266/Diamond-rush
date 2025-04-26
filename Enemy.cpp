@@ -10,7 +10,6 @@ Enemy::Enemy(int x, int y, Direction dir, SDL_Renderer* renderer)
     : tileX(x), tileY(y), startX(x), startY(y), direction(dir), renderer(renderer) {
     this->x = x * TILE_SIZE;
     this->y = y * TILE_SIZE;
-    
 }
 
 Enemy::~Enemy() {
@@ -39,7 +38,7 @@ bool Enemy::CanMoveTo(int tx, int ty) {
     if (tx < 0 || tx >= MAP_WIDTH || ty < 0 || ty >= MAP_HEIGHT) return false;
 
     int tileType = tileMap[ty][tx];
-    return (tileType != 1 && tileType != 2);
+    return (tileType != 1 && tileType != 2 && tileType != 3 && tileType != 4);
 }
 
 
@@ -89,18 +88,35 @@ void Enemy::Reset() {
 void LoadEnemies(SDL_Renderer* renderer) {
     enemies.clear();
     memset(enemyMap, 0, sizeof(enemyMap));
-
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             if (tileMap[y][x] == 5) {
                 Direction dir;
 
-                if (y == 4 && x == 5) dir = HORIZONTAL;
-                else if ((y == 4 && x == 2) || (y == 17 && (x == 15 || x == 17 || x == 19)))
+                if (y == 4 && x == 5) {
+                    dir = HORIZONTAL;
+                }
+                else if ((y == 4 && x == 2) || (y == 17 && (x == 15 || x == 17 || x == 19))) {
                     dir = VERTICAL;
-                else
+                }
+                else if ((x == 3 && y == 18) || (x == 10 && y == 19)) {
+                    dir = VERTICAL;
+                }
+                else if (x == 11 && y == 18) {
+                    dir = HORIZONTAL;
+                }
+                else if ((x == 10 && y == 16) || (x==6 && y == 8)){
+                    dir = VERTICAL;
+                }
+                else if (x == 16 && y == 17) {
+                    dir = HORIZONTAL;
+                }
+                else if (x == 16 && y == 18) {
+                    dir = HORIZONTAL;
+                }
+                else {
                     continue;
-
+                }
                 enemies.emplace_back(x, y, dir, renderer);
                 enemyMap[y][x] = 1;
             }
