@@ -26,8 +26,6 @@ Bước 3: Mở Visual Studio 2022 , cấu hình project với thư viện SDL2.
 
 Bước 4: Build project và chạy
 
-
-
 🕹️ Bắt đầu game
 
 Click NEW GAME để vào menu chọn màn chơi.
@@ -46,6 +44,9 @@ Tránh bị đá rơi hoặc rắn tấn công.
 📦 Các đối tượng:
 
 Nhân vật chính: Di chuyển theo từng ô, thu thập kim cương, né đá và rắn.
+
+![character_right](https://github.com/user-attachments/assets/89870971-c298-4ea4-8d7b-8aaec9fd60a1)
+
 
 Đá: Rơi khi không có vật cản bên dưới. Đè chết nhân vật hoặc rắn.
 
