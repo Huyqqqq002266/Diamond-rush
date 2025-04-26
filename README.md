@@ -9,7 +9,7 @@ Diamond Rush SDL2  là một game phiêu lưu giải đố theo phong cách cổ
 
 📦 Cách tải và chạy game
 
-#Bước 1: Clone repo về:
+Bước 1: Clone repo về:
 git clone https://github.com/Huyqqqq002266/Diamond-rush.git
 
 Bước 2: Cài đặt SDL2 và các thư viện cần thiết:
