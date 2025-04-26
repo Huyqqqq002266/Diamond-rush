@@ -1,5 +1,5 @@
 # Diamond-rush
-📖 Diamond Rush SDL2
+## 📖 Diamond Rush SDL2
 
 Diamond Rush SDL2  là một game phiêu lưu giải đố theo phong cách cổ điển, nơi bạn điều khiển nhân vật đi khám phá các hang động bí ẩn, thu thập kim cương và tránh né những mối nguy hiểm như đá rơi và rắn độc. Game được lập trình bằng C++ với SDL2.
 
@@ -7,7 +7,7 @@ Diamond Rush SDL2  là một game phiêu lưu giải đố theo phong cách cổ
 Đây là video chi tiết về game: https://drive.google.com/file/d/18NfN-SykWDLlkkie-7rwwBLumxGv1mwc/view?usp=sharing
 
 
-📦 Cách tải và chạy game
+## 📦 Cách tải và chạy game
 
 Bước 1: Clone repo về:
 git clone https://github.com/Huyqqqq002266/Diamond-rush.git
@@ -26,7 +26,7 @@ Bước 3: Mở Visual Studio 2022 , cấu hình project với thư viện SDL2.
 
 Bước 4: Build project và chạy
 
-🕹️ Bắt đầu game
+## 🕹️ Bắt đầu game
 
 Click NEW GAME để vào menu chọn màn chơi.
 
@@ -39,9 +39,9 @@ Thu thập kim cương để mở cổng kết thúc màn chơi.
 
 Tránh bị đá rơi hoặc rắn tấn công.
 
-🎮 Các thành phần trong game
+## 🎮 Các thành phần trong game
 
-📦 Các đối tượng:
+## 📦 Các đối tượng:
 
 Nhân vật chính: Di chuyển theo từng ô, thu thập kim cương, né đá và rắn.
 
@@ -69,10 +69,10 @@ Cổng Exit: Mở khi đủ số kim cương.
 
 ![exit](https://github.com/user-attachments/assets/85d271ee-f78d-459f-9725-35b170b3c450)
 
-🎨 Đồ họa:
+## 🎨 Đồ họa:
 Bản đồ được tạo ra từng các tile ảnh.
 
-📊 Các tính năng:
+## 📊 Các tính năng:
 Hệ thống bản đồ dạng mảng 2D.
 
 ![background](https://github.com/user-attachments/assets/e67f0cfe-d6e7-451f-814c-e3ddb44461f6)
@@ -98,15 +98,15 @@ Menu Start, Setting, Level Select đầy đủ.
 ![menu](https://github.com/user-attachments/assets/3a9c3093-387e-44e4-bcd7-f16f61252629)
 
 
-📜 Cách chơi
+## 📜 Cách chơi
 
-🎮 Điều khiển:
+## 🎮 Điều khiển:
 
 Mũi tên: Di chuyển nhân vật.
 
 Esc: Tạm dừng game.
 
-📌 Luật chơi:
+## 📌 Luật chơi:
 
 Thu thập kim cương, tránh đá và kẻ thù.
 
@@ -119,21 +119,21 @@ Chết bởi đá/rắn → mất mạng, map trở về trạng thái gốc.
 
 Hết mạng → Game Over.
 
-🏆 Chiến thắng và thất bại
+## 🏆 Chiến thắng và thất bại
 
 Chiến thắng: Thu thập đủ kim cương và đi qua cổng exit.
 
 Thất bại: Bị đá đè hoặc rắn cắn hết số mạng.
 
-🎵 Âm thanh
+## 🎵 Âm thanh
 
 Âm nhạc nền và hiệu ứng sử dụng SDL2_mixer.
 
 
 
-***Về source code game Diamond Rush (SDL2 + C++) 
+### Về source code game Diamond Rush (SDL2 + C++) 
 
-📄 main.cpp
+## 📄 main.cpp
 
 Là file khởi động chính của game
 
@@ -147,9 +147,9 @@ Bao gồm:
 
 Hàm InitData(): Khởi tạo SDL, SDL_image, SDL_ttf, SDL_mixer và tạo Window + Renderer chính cho game
 
-📁 Các file logic chính
+## 📁 Các file logic chính
 
-📄 Character.h / Character.cpp
+## 📄 Character.h / Character.cpp
 
 Xây dựng class nhân vật chính
 
@@ -165,14 +165,14 @@ Tính thời gian đá đè và quyết định trạng thái nhân vật
 
 Kiểm tra game over
 
-📄 Enemy.h / Enemy.cpp
+## 📄 Enemy.h / Enemy.cpp
 Xây dựng class enemy
 
 Điều khiển enemy di chuyển và tấn công nhân vật
 
 Di chuyển ngang hay dọc
 
-📄 Map.h / Map.cpp
+## 📄 Map.h / Map.cpp
 Quản lý bản đồ game
 
 Load map từ mảng tileMap
@@ -181,13 +181,13 @@ Hiển thị map lên màn hình
 
 Reset map khi nhân vật chết hoặc qua màn
 
-📄 RockManager.h / RockManager.cpp
+## 📄 RockManager.h / RockManager.cpp
 
 Quản lý trọng lực và va chạm của các viên đá
 
 Xử lý đá rơi, va vào nhân vật hoặc enemy
 
-📄 HUD.h / HUD.cpp
+## 📄 HUD.h / HUD.cpp
 
 Quản lý HUD (Head-up Display)
 
@@ -195,7 +195,7 @@ Hiển thị số mạng, số kim cương thu thập được
 
 Các biểu tượng phụ (ví dụ: chìa khóa, vật phẩm đặc biệt)
 
-📄 menu.h / menu.cpp
+## 📄 menu.h / menu.cpp
 
 Tạo và xử lý các menu của game
 
@@ -209,7 +209,7 @@ Chọn màn
 
 Thắng / Thua
 
-📄 CommonFunc.h / CommonFunc.cpp
+## 📄 CommonFunc.h / CommonFunc.cpp
 
 Chứa các hằng số dùng chung
 
@@ -217,7 +217,7 @@ Khai báo các biến toàn cục (Window, Renderer…)
 
 Hàm set vị trí, xử lý âm thanh
 
-📄 BaseObject.h / BaseObject.cpp
+## 📄 BaseObject.h / BaseObject.cpp
 
 Class cha cho tất cả object có thể vẽ lên màn hình
 
@@ -233,8 +233,8 @@ Các hàm LoadImg(), Render(), Free()
 
 
 
-📑 Credit
-Code: Huyqqqq
+## 📑 Credit
+## Code: Huyqqqq
 
 Ý tưởng: Dựa trên game Diamond Rush bản mobile cổ điển.
 
