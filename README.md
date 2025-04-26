@@ -3,7 +3,7 @@
 
 Diamond Rush SDL2  là một game phiêu lưu giải đố theo phong cách cổ điển, nơi bạn điều khiển nhân vật đi khám phá các hang động bí ẩn, thu thập kim cương và tránh né những mối nguy hiểm như đá rơi và rắn độc. Game được lập trình bằng C++ với SDL2.
 Đây là video chi tiết về game: https://drive.google.com/file/d/18NfN-SykWDLlkkie-7rwwBLumxGv1mwc/view?usp=sharing
-drive.google.com
+
 
 📦 Cách tải và chạy game
 
