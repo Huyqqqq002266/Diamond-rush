@@ -25,6 +25,9 @@ SDL2_ttf
 Bước 3: Mở Visual Studio 2022 , cấu hình project với thư viện SDL2.
 
 Bước 4: Build project và chạy
+
+
+
 🕹️ Bắt đầu game
 
 Click NEW GAME để vào menu chọn màn chơi.
