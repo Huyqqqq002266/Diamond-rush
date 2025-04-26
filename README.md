@@ -54,6 +54,9 @@ Kim cương: Thu thập đủ số lượng để mở cửa exit.
 
 Rắn: Di chuyển tự động. Chạm vào nhân vật là mất mạng.
 
+![enemy](https://github.com/user-attachments/assets/fecd881e-129d-4bcf-b355-71f669d8750b)
+
+
 Lá cây: Đi qua phát ra âm thanh.
 
 ![leaves](https://github.com/user-attachments/assets/a2674dd9-f2b1-48ac-8220-015b6e98676c)
@@ -102,6 +105,9 @@ Esc: Tạm dừng game.
 📌 Luật chơi:
 
 Thu thập kim cương, tránh đá và kẻ thù.
+
+![Screenshot 2025-04-26 151047](https://github.com/user-attachments/assets/cb41dc1a-2289-43b7-9cac-f96df1e808f3)
+
 
 Khi đủ kim cương → đến cổng exit để qua màn.
 
