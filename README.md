@@ -161,6 +161,8 @@ Chạm vào vật thể (đá, kim cương, lá, rắn…)
 
 Cập nhật trạng thái (sống, chết)
 
+Tính thời gian đá đè và quyết định trạng thái nhân vật
+
 Kiểm tra game over
 
 📄 Enemy.h / Enemy.cpp
@@ -168,7 +170,7 @@ Xây dựng class enemy
 
 Điều khiển enemy di chuyển và tấn công nhân vật
 
-Có thể chứa logic AI đơn giản (random hướng hoặc di chuyển theo tuyến)
+Di chuyển ngang hay dọc
 
 📄 Map.h / Map.cpp
 Quản lý bản đồ game
@@ -184,8 +186,6 @@ Reset map khi nhân vật chết hoặc qua màn
 Quản lý trọng lực và va chạm của các viên đá
 
 Xử lý đá rơi, va vào nhân vật hoặc enemy
-
-Tính thời gian đá đè và quyết định trạng thái nhân vật
 
 📄 HUD.h / HUD.cpp
 
